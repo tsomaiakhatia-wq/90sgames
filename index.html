@@ -189,9 +189,10 @@ $("#c-run").onclick=()=>{const cells=$$("#c-wheel .L");$("#c-run").disabled=true
 $("#c-stop").onclick=()=>{clearInterval(iv);const a=$("#c-wheel .act");letter=a?a.textContent:AB[0];$("#c-stop").disabled=true;beep(880,.25);confetti();startAnswers();if(window.sendOnlineGame)window.sendOnlineGame('city-round',{letter,categories:cats,time:+$("#c-time").value,round:rn})};
 function startAnswers(){$("#c-run").style.display="none";$("#c-round").style.display="block";$("#c-let").textContent=letter;
 $("#c-table").innerHTML="<table><tr><th>კატეგორია</th><th>პასუხი</th></tr>"+cats.map((c,i)=>`<tr><td>${c}</td><td><input data-i="${i}" autocomplete="off" placeholder="${letter}..."></td></tr>`).join("")+"</table>";
+$("#c-table").querySelectorAll("input").forEach(input=>input.addEventListener("input",()=>{if(window.sendOnlineGame)window.sendOnlineGame("city-answer",{index:+input.dataset.i,value:input.value,letter,round:rn})}));
 let t=+$("#c-time").value;const tick=()=>{$("#c-timer").textContent="⏱ "+t;$("#c-timer").classList.toggle("low",t<=10);if(t<=10&&t>0)beep(900,.1)};tick();clearInterval(tv);
 tv=setInterval(()=>{t--;tick();if(t<=0){clearInterval(tv);finish()}},1000)}
-$("#c-end").onclick=()=>{clearInterval(tv);finish()};
+$("#c-end").onclick=()=>{clearInterval(tv);if(window.sendOnlineGame)window.sendOnlineGame("city-finish",{round:rn});finish()};
 function finish(){clearInterval(tv);const ans=$$("#c-table input").map(i=>(i.disabled=true,i.value.trim()));$("#c-round").style.display="none";
 const st=ans.map(a=>a&&a[0]===letter);const r=$("#c-rev");r.style.display="block";
 const draw=()=>{const pts=st.filter(Boolean).length*10;r.innerHTML=`<h3>შეფასება: ასო „${letter}“</h3><p class="note">ავტომატური შემოწმება მხოლოდ დამხმარეა (ცარიელი ან სხვა ასოთი დაწყებული პასუხი წითლად იწყება). საბოლოოდ თავად გადაწყვიტე.</p><table>`+cats.map((c,i)=>`<tr><td>${c}</td><td>${ans[i]||"—"}</td><td><button class="btn g" data-v="1" data-i="${i}" style="padding:4px 10px;opacity:${st[i]?1:.35}">✅</button><button class="btn r" data-v="0" data-i="${i}" style="padding:4px 10px;opacity:${st[i]?.35:1}">❌</button></td></tr>`).join("")+`</table><p>რაუნდის ქულა: <b>${pts}</b></p><button class="btn b" id="c-ok">დადასტურება და შემდეგი რაუნდი</button>`;
