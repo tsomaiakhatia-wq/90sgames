@@ -239,6 +239,15 @@ console.log('Supabase დაკავშირებულია!');
 </script>
 <script>
 (function () {
+  function initOnlineRooms() {
+  if (!window.supabase || !window.supabase.createClient) {
+    const target = document.getElementById('onlineRooms');
+    if (target) {
+      const msg = target.querySelector('#orStatus');
+      if (msg) msg.textContent = 'ონლაინ სისტემა იტვირთება. განაახლე გვერდი; თუ ისევ ასეა, შეამოწმე ინტერნეტი.';
+    }
+    return;
+  }
   const db = window.supabase.createClient(
     'https://cngjeiiisggwmhchmxmc.supabase.co',
     'sb_publishable_ppjLBlECKgtrmUY1n02isg_zapRuAnX'
@@ -448,12 +457,17 @@ const panel = document.createElement('div');  panel.id = 'onlineRooms';
 
     if (error) {
       console.error(error);
-      return status('ოთახის მოძებნა ვერ მოხერხდა.');
+      return status('ოთახის მოძებნა ვერ მოხერხდა: ' + error.message);
     }
-    if (!data) return status('ასეთი აქტიური ოთახი ვერ მოიძებნა.');
-
+    if (!data) return status('ასეთი აქტიური ოთახი ვერ მოიძებნა. გადაამოწმე კოდი.');
     await enterRoom(data);
   };
+  } // initOnlineRooms
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initOnlineRooms, { once: true });
+  } else {
+    initOnlineRooms();
+  }
 })();
 </script>
 
