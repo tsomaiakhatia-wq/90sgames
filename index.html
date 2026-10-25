@@ -242,8 +242,7 @@ console.log('Supabase დაკავშირებულია!');
   `;
   document.head.appendChild(style);
 
-  const panel = document.createElement('section');
-  panel.id = 'onlineRooms';
+const panel = document.createElement('div');  panel.id = 'onlineRooms';
   panel.innerHTML = `
     <strong>🎮 ონლაინ ოთახები</strong>
     <input id="orName" maxlength="24" placeholder="შენი სახელი">
