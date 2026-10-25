@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>90s GAME CLUB</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@500;800&display=swap" rel="stylesheet">
+<style>
+:root{--p:#7b2ff7;--pk:#ff3d9a;--bl:#19b5fe;--lm:#b6f400;--yl:#ffd400;--or:#ff8a00;--rd:#ff3b3b;--ink:#26104d;--card:#fffdf5;--bg1:#4b1fa8;--bg2:#ff3d9a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--card:#fff7e0;--bg1:#2a0f66;--bg2:#b01c6d}}
+:root[data-theme="dark"]{--card:#fff7e0;--bg1:#2a0f66;--bg2:#b01c6d}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:'Noto Sans Georgian',system-ui,sans-serif;color:var(--ink);background:linear-gradient(160deg,var(--bg1),var(--bg2)) fixed;min-height:100vh}
+nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px;background:rgba(20,5,60,.55);position:sticky;top:env(safe-area-inset-top,0px);z-index:5;backdrop-filter:blur(6px)}
+.logo{font-weight:800;color:var(--yl);font-size:20px;text-shadow:2px 2px 0 var(--pk);margin-right:auto}
+nav a{color:#fff;text-decoration:none;font-weight:800;font-size:14px;padding:6px 10px;border-radius:10px}
+nav a:hover,nav a.on{background:var(--pk)}
+main{max-width:1000px;margin:0 auto;padding:18px 14px 50px}
+h1,h2{color:#fff;text-shadow:3px 3px 0 rgba(0,0,0,.35);line-height:1.25}
+.sub{color:#fff;font-weight:500;font-size:18px}
+.btn{font:800 17px inherit;font-family:inherit;border:0;border-radius:16px;padding:12px 20px;color:#fff;background:var(--p);box-shadow:0 6px 0 #3d0f9e,0 10px 14px rgba(0,0,0,.3);cursor:pointer;transition:transform .08s,box-shadow .08s;margin:4px}
+.btn:hover{filter:brightness(1.1)}.btn:active{transform:translateY(5px);box-shadow:0 1px 0 #3d0f9e}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.g{background:#1fb53a;box-shadow:0 6px 0 #0d6b20}.btn.r{background:var(--rd);box-shadow:0 6px 0 #9b1313}.btn.y{background:var(--or);box-shadow:0 6px 0 #a14d00}.btn.b{background:var(--bl);box-shadow:0 6px 0 #0a77a8}
+.card{background:var(--card);border-radius:22px;padding:18px;box-shadow:0 8px 0 rgba(0,0,0,.25);margin:12px 0;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.gc{perspective:800px}.gc .card{transition:transform .15s;transform-style:preserve-3d;border:4px solid var(--ink)}
+.gc.c1 .card{background:linear-gradient(145deg,#fff3a8,#ffb3d9)}.gc.c2 .card{background:linear-gradient(145deg,#b8f2ff,#d6c2ff)}
+.hero{display:flex;flex-wrap:wrap;align-items:center;gap:20px}.hero>div:first-child{flex:1 1 320px}
+.scene{perspective:600px;width:130px;height:130px;margin:20px}
+.cube{width:100px;height:100px;position:relative;transform-style:preserve-3d;animation:spin 8s linear infinite;margin:15px}
+.cube i{position:absolute;width:100px;height:100px;display:grid;place-items:center;font:800 48px 'Noto Sans Georgian';font-style:normal;color:#fff;border:3px solid #fff;opacity:.95}
+.cube i:nth-child(1){transform:translateZ(50px);background:var(--pk)}.cube i:nth-child(2){transform:rotateY(90deg) translateZ(50px);background:var(--bl)}.cube i:nth-child(3){transform:rotateY(180deg) translateZ(50px);background:var(--or)}.cube i:nth-child(4){transform:rotateY(-90deg) translateZ(50px);background:#1fb53a}.cube i:nth-child(5){transform:rotateX(90deg) translateZ(50px);background:var(--p)}.cube i:nth-child(6){transform:rotateX(-90deg) translateZ(50px);background:var(--rd)}
+@keyframes spin{to{transform:rotateX(360deg) rotateY(360deg)}}
+@media (prefers-reduced-motion:reduce){.cube{animation:none}}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:3px solid var(--ink);background:#fff;border-radius:999px;padding:5px 12px;font:800 14px inherit;font-family:inherit;color:var(--ink);cursor:pointer}
+.chip.on{background:var(--lm)}
+input,select{font:500 16px inherit;font-family:inherit;padding:10px;border-radius:12px;border:3px solid var(--ink);background:#fff;color:var(--ink);max-width:100%}
+.letters{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.L{width:44px;height:44px;display:grid;place-items:center;font-weight:800;font-size:20px;border-radius:12px;background:#fff;border:3px solid var(--ink);color:var(--ink);transition:all .08s}
+.L.ex{opacity:.3;text-decoration:line-through}.L.act{background:var(--yl);transform:scale(1.35) translateY(-4px);box-shadow:0 6px 0 var(--or);z-index:1;position:relative}
+.big{font-size:90px;font-weight:800;text-align:center;color:var(--pk);text-shadow:4px 4px 0 var(--ink)}
+.timer{font-size:56px;font-weight:800;text-align:center;color:var(--p)}.timer.low{color:var(--rd);animation:pulse .5s infinite alternate}
+@keyframes pulse{to{transform:scale(1.15)}}
+table{width:100%;border-collapse:collapse}td,th{padding:6px;text-align:left}td input{width:100%}
+.ok{color:#0d8a26;font-weight:800}.no{color:var(--rd);font-weight:800}
+.kb{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.kb button{width:44px;height:48px;font:800 19px inherit;font-family:inherit;border-radius:10px;border:3px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer}
+.kb button.hit{background:#6be07f}.kb button.miss{background:#ff8d8d}.kb button:disabled{cursor:default}
+.slots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px}.slots span{width:42px;height:52px;border-bottom:5px solid var(--ink);font:800 32px inherit;font-family:inherit;text-align:center}
+svg .part{opacity:0;transition:opacity .4s}svg .part.show{opacity:1}
+.note{background:#fff3a8;border:3px dashed var(--or);border-radius:14px;padding:10px;font-weight:500;font-size:14px;color:var(--ink)}
+.conf{position:fixed;top:-30px;font-size:30px;animation:fall 2.5s linear forwards;pointer-events:none;z-index:9}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+section{display:none}section.on{display:block}
+main{position:relative;z-index:1}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 20% 20%,#ff3d9a 0,transparent 45%),radial-gradient(circle at 80% 30%,#19b5fe 0,transparent 45%),radial-gradient(circle at 50% 90%,#ffd400 0,transparent 50%),linear-gradient(160deg,#7b2ff7,#4b1fa8)}
+#fl{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+#fl span{position:absolute;bottom:-80px;font-weight:800;opacity:.4;animation:rise linear infinite;text-shadow:3px 3px 0 rgba(0,0,0,.25)}
+@keyframes rise{to{transform:translateY(-115vh) rotate(360deg)}}
+@keyframes rb{0%{color:#fff}25%{color:#ffd400}50%{color:#b6f400}75%{color:#7ee8ff}100%{color:#fff}}
+@keyframes wob{25%{transform:rotate(-4deg) scale(1.06)}75%{transform:rotate(4deg) scale(1.06)}}
+@keyframes bob{50%{transform:translateY(-8px)}}
+h1{animation:rb 4s linear infinite;font-size:clamp(26px,5vw,44px)}
+.logo{display:inline-block;animation:wob 2.5s infinite}
+.btn{position:relative;overflow:hidden}
+.btn::after{content:"";position:absolute;left:8%;right:8%;top:3px;height:40%;border-radius:12px;background:linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,0));pointer-events:none}
+.btn:hover{animation:wob .4s}
+.scenes{display:flex;flex-wrap:wrap;justify-content:center;perspective:700px;transform-style:preserve-3d;transition:transform .15s;cursor:pointer;touch-action:none}
+.scenes .cube:nth-child(2){animation-duration:5s;animation-direction:reverse;margin-top:40px}.scenes .cube:nth-child(3){animation-duration:11s}
+.cube.f{animation-duration:1s!important}
+.cube i{box-shadow:inset 0 -12px 0 rgba(0,0,0,.2),inset 0 10px 0 rgba(255,255,255,.35);border-radius:14px}
+.L{box-shadow:0 4px 0 var(--ink);background:linear-gradient(#fff,#ffe8f5)}
+.L.act{background:linear-gradient(#ffe45c,#ff8a00);box-shadow:0 8px 0 var(--pk),0 0 22px #ffd400;animation:bob .3s infinite}
+.big{animation:bob 1s infinite}
+.card h2{animation:bob 3s infinite}
+.chip{box-shadow:0 3px 0 var(--ink);transition:transform .1s}.chip:hover{transform:translateY(-3px) rotate(-2deg)}.chip.on{background:linear-gradient(#d8ff5c,#7fe03a)}
+.kb button{box-shadow:0 4px 0 var(--ink);transition:transform .1s}.kb button:not(:disabled):hover{transform:translateY(-3px) scale(1.1);background:var(--yl)}.kb button:not(:disabled):active{transform:translateY(3px)}
+@media (prefers-reduced-motion:reduce){#fl span,h1,.logo,.card h2,.big,.L.act{animation:none}}
+.empty{text-align:center;padding:14px;font-weight:500}
+</style>
+</head>
+<body>
+<div id="fl"></div>
+<nav>
+<span class="logo">🎲 90s GAME CLUB</span>
+<a href="#home">მთავარი</a><a href="#games">თამაშები</a><a href="#rank">რეიტინგები</a><a href="#how">როგორ ვითამაშოთ</a><a href="#me">ჩემი კაბინეტი</a><a href="#login">შესვლა / რეგისტრაცია</a>
+<button class="btn y" id="snd" style="padding:6px 12px;margin:0;font-size:14px">🔇 ხმა</button>
+</nav>
+<main>
+
+<section id="v-home">
+<div class="hero"><div>
+<h1>გაიხსენე ბავშვობა. გამოიწვიე მეგობრები. გახდი გამარჯვებული!</h1>
+<p class="sub">შეკრიბე მეგობრები, შექმენი ოთახი, გააზიარე კოდი და დაიწყე თამაში!</p>
+<a href="#games"><button class="btn g">🎮 დაიწყე თამაში</button></a>
+</div><div class="scenes" title="დააჭირე კუბებს!"><div class="cube"><i>ა</i><i>ბ</i><i>გ</i><i>დ</i><i>მ</i><i>ს</i></div><div class="cube"><i>🎲</i><i>მ</i><i>ქ</i><i>⭐</i><i>ო</i><i>ხ</i></div><div class="cube"><i>ტ</i><i>პ</i><i>🎮</i><i>ჩ</i><i>შ</i><i>ც</i></div></div></div>
+<div class="grid">
+<div class="gc c1"><div class="card"><h2 style="color:var(--ink);text-shadow:none">🏙️ ქალაქობანა</h2><p>აირჩიე კატეგორიები, გააჩერე ასო და შეავსე ცხრილი მეგობრებზე სწრაფად.</p><a href="#city"><button class="btn">ითამაშე</button></a></div></div>
+<div class="gc c2"><div class="card"><h2 style="color:var(--ink);text-shadow:none">🔤 ჩამოხრჩობანა</h2><p>გამოიცანი ჩაფიქრებული სიტყვა, სანამ ნახატი დასრულდება.</p><a href="#hang"><button class="btn b">ითამაშე</button></a></div></div>
+</div>
+<div class="card"><b>ონლაინ ოთახები, რეიტინგები, ბოლო გამარჯვებულები, ონლაინ მოთამაშეები:</b> ჯერ არ არის მიერთებული ბაზასთან, ამიტომ აქ არანაირი გამოგონილი რიცხვი არ ჩანს.</div>
+</section>
+
+<section id="v-games"><h2>თამაშები</h2><div class="grid">
+<div class="card"><h2 style="color:var(--ink);text-shadow:none">🏙️ ქალაქობანა</h2><a href="#city"><button class="btn">ითამაშე</button></a></div>
+<div class="card"><h2 style="color:var(--ink);text-shadow:none">🔤 ჩამოხრჩობანა</h2><a href="#hang"><button class="btn b">ითამაშე</button></a></div></div></section>
+
+<section id="v-city">
+<h2>🏙️ ქალაქობანა</h2>
+<div id="c-setup" class="card">
+<b>აირჩიე კატეგორიები (მინიმუმ 2)</b><br>
+<input id="c-search" placeholder="🔍 კატეგორიის ძებნა"> <input id="c-add" placeholder="ახალი კატეგორია"><button class="btn y" id="c-addb" style="padding:8px 14px">+</button>
+<div id="c-cats"></div>
+<p>⏱ დრო: <select id="c-time"><option>30</option><option>60</option><option selected>90</option><option>120</option><option>180</option><option>300</option></select> წმ</p>
+<p>ასო გამორიცხვისთვის დააჭირე ქვემოთ. გამორიცხული ასოები არ მონაწილეობს:</p>
+<div class="letters" id="c-ex"></div>
+<p id="c-msg" class="no"></p>
+<button class="btn g" id="c-go">▶ გააგრძელე</button>
+</div>
+<div id="c-play" class="card" style="display:none">
+<p>რაუნდი <b id="c-rn">1</b> · ჯამური ქულა: <b id="c-tot">0</b></p>
+<div class="letters" id="c-wheel"></div>
+<div style="text-align:center"><button class="btn" id="c-run">▶ ასოების გავლება</button><button class="btn r" id="c-stop" disabled>✋ სტოპ!</button></div>
+<div id="c-round" style="display:none"><div class="big" id="c-let"></div><div class="timer" id="c-timer"></div><div id="c-table"></div>
+<div style="text-align:center"><button class="btn y" id="c-end">დასრულება</button></div></div>
+<div id="c-rev" style="display:none"></div>
+</div>
+<div class="note">ამ ეტაპზე ეს ერთ მოწყობილობაზე სავარჯიშო რეჟიმია. მრავალი მოთამაშე, ოთახის კოდები, სერვერული ქულები და ერთობლივი შეფასება მომდევნო ეტაპზე Supabase-ით დაემატება.</div>
+</section>
+
+<section id="v-hang">
+<h2>🔤 ჩამოხრჩობანა</h2>
+<div id="h-set" class="card">
+<p><b>სიტყვის ავტორო,</b> ჩაწერე ქართული არსებითი სახელი (მხოლოდ ქართული ასოები, ციფრების გარეშე). მეტოქე ეკრანს არ უყურებს!</p>
+<input id="h-word" type="password" autocomplete="off" placeholder="სიტყვა"> 
+<label>მცდელობა: <select id="h-max"><option>5</option><option>7</option><option selected>9</option></select></label>
+<button class="btn g" id="h-start">დამალვა და დაწყება</button>
+<p id="h-msg" class="no"></p>
+</div>
+<div id="h-play" class="card" style="display:none">
+<svg viewBox="0 0 200 220" width="220" style="display:block;margin:auto" stroke="#26104d" stroke-width="5" fill="none" stroke-linecap="round">
+<g class="part"><path d="M20 210H110M45 210V15"/></g><g class="part"><path d="M45 15H140"/></g><g class="part"><path d="M140 15V45"/></g>
+<g class="part"><circle cx="140" cy="62" r="17" fill="#ffd400"/></g><g class="part"><path d="M140 79V135"/></g><g class="part"><path d="M140 90L118 118"/></g><g class="part"><path d="M140 90L162 118"/></g><g class="part"><path d="M140 135L122 175"/></g><g class="part"><path d="M140 135L158 175"/></g></svg>
+<div style="text-align:center">შეცდომა: <b id="h-wr">0</b>/<b id="h-mx"></b> · სიტყვა <b id="h-len"></b> ასოსგან</div>
+<div class="slots" id="h-slots"></div><div class="kb" id="h-kb"></div>
+<p id="h-res" style="text-align:center;font-size:22px;font-weight:800"></p>
+<div style="text-align:center"><button class="btn" id="h-again">ახალი სიტყვა</button></div>
+</div>
+<div class="note">ეს ლოკალური რეჟიმია: სიტყვა მეხსიერებაშია ამავე მოწყობილობაზე. ონლაინ ვერსიაში ის სერვერზე იქნება და მეტოქის ბრაუზერს არასოდეს მიეწოდება.</div>
+</section>
+
+<section id="v-rank"><h2>რეიტინგები</h2><div class="card empty">ჯერ მონაცემები არ არის. რეიტინგები გამოჩნდება, როცა ბაზა და რეგისტრაცია მიერთდება და რეალური თამაშები დასრულდება.</div></section>
+<section id="v-how"><h2>როგორ ვითამაშოთ</h2><div class="card"><p><b>ქალაქობანა:</b> აირჩიე 2 ან მეტი კატეგორია, დააჭირე „ასოების გავლებას“ და ჩააჩერე „სტოპ!“-ით. ამ ასოზე შეავსე ცხრილი, შემდეგ მონიშნე სწორი (✅) და არასწორი (❌) პასუხები. სწორი პასუხი 10 ქულაა.</p><p><b>ჩამოხრჩობანა:</b> ერთი ჩაიფიქრებს სიტყვას, მეორე ასო-ასო გამოიცნობს. ყოველ შეცდომაზე ნახატს ნაწილი ემატება.</p></div></section>
+<section id="v-me"><h2>ჩემი კაბინეტი</h2><div class="card empty">პირადი კაბინეტი მოითხოვს ანგარიშს. რეგისტრაცია მომდევნო ეტაპზე დაემატება.</div></section>
+<section id="v-login"><h2>შესვლა / რეგისტრაცია</h2><div class="card empty">ელფოსტით შესვლა, სტუმრის რეჟიმი და პაროლის აღდგენა მომდევნო ეტაპზე Supabase Authentication-ით დაემატება. ახლა ორივე თამაში ანგარიშის გარეშე იმუშავებს.</div></section>
+</main>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const AB="აბგდევზთიკლმნოპჟრსტუფქღყშჩცძწჭხჯჰ".split("");
+let sound=false,ac;
+function beep(f,d){if(!sound)return;try{ac=ac||new AudioContext();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.08;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+$("#snd").onclick=()=>{sound=!sound;$("#snd").textContent=sound?"🔊 ხმა":"🔇 ხმა";beep(660,.1)};
+function route(){const h=location.hash.slice(1)||"home";const id=$("#v-"+h)?h:"home";$$("section").forEach(s=>s.classList.toggle("on",s.id==="v-"+id));$$("nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+id));scrollTo(0,0)}
+addEventListener("hashchange",route);route();
+$$(".gc").forEach(c=>{const k=c.firstElementChild;c.onmousemove=e=>{const r=c.getBoundingClientRect();k.style.transform=`rotateY(${((e.clientX-r.left)/r.width-.5)*14}deg) rotateX(${-((e.clientY-r.top)/r.height-.5)*14}deg)`};c.onmouseleave=()=>k.style.transform=""});
+function confetti(){for(let i=0;i<40;i++){const s=document.createElement("span");s.className="conf";s.textContent=["🎉","⭐","✨","🎊"][i%4];s.style.left=Math.random()*100+"vw";s.style.animationDelay=Math.random()*.8+"s";document.body.appendChild(s);setTimeout(()=>s.remove(),3600)}}
+
+const fl=$("#fl"),sy=["ა","ბ","გ","მ","ს","ქ","ო","🎲","⭐","🎈","🎮","🍭","🎉","🔤"],cl=["#ff3d9a","#19b5fe","#b6f400","#ffd400","#ff8a00","#fff"];
+for(let i=0;i<28;i++){const s=document.createElement("span");s.textContent=sy[i%sy.length];s.style.cssText=`left:${Math.random()*100}%;font-size:${24+Math.random()*40}px;color:${cl[i%cl.length]};animation-duration:${8+Math.random()*10}s;animation-delay:${-Math.random()*15}s`;fl.appendChild(s)}
+$$(".cube").forEach(c=>c.onclick=()=>{c.classList.add("f");beep(600,.1);confetti();setTimeout(()=>c.classList.remove("f"),1500)});
+const sc=$(".scenes");sc.onpointermove=e=>{const r=sc.getBoundingClientRect();sc.style.transform=`rotateY(${((e.clientX-r.left)/r.width-.5)*50}deg) rotateX(${-((e.clientY-r.top)/r.height-.5)*40}deg)`};sc.onpointerleave=()=>sc.style.transform="";
+/* ქალაქობანა */
+const G={"ძირითადი":["სახელი","გვარი","ქალაქი","ქვეყანა","მდინარე","მთა","დედაქალაქი"],"ცოცხალი სამყარო":["ცხოველი","ფრინველი","თევზი","მცენარე","ყვავილი","ხე","ხილი","ბოსტნეული"],"საკვები":["კერძი","დესერტი","სასმელი"],"ადამიანები":["პროფესია","მწერალი","მომღერალი","სპორტსმენი","ზღაპრის გმირი"],"ნივთები":["ნივთი","ტანსაცმელი","ტრანსპორტი","მუსიკალური ინსტრუმენტი"],"კულტურა":["ფილმი","წიგნი","სიმღერა","მულტფილმი"],"სხვა":["ფერი","სპორტის სახეობა","ენა","ემოცია"],"ჩემი":[]};
+const sel=new Set(["სახელი","ქალაქი","ქვეყანა","ცხოველი","მცენარე"]),ex=new Set();
+function drawCats(){const q=$("#c-search").value.trim().toLowerCase();$("#c-cats").innerHTML="";
+for(const g in G){const items=G[g].filter(c=>c.toLowerCase().includes(q));if(!items.length)continue;const d=document.createElement("div");d.innerHTML=`<p><b>${g}</b></p>`;const w=document.createElement("div");w.className="chips";items.forEach(c=>{const b=document.createElement("button");b.className="chip"+(sel.has(c)?" on":"");b.textContent=c;b.onclick=()=>{sel.has(c)?sel.delete(c):sel.add(c);drawCats();beep(500,.05)};w.appendChild(b)});d.appendChild(w);$("#c-cats").appendChild(d)}
+$("#c-msg").textContent=sel.size<2?"გთხოვთ აირჩიოთ მინიმუმ 2 კატეგორია. არჩეულია: "+sel.size:""}
+$("#c-search").oninput=drawCats;
+$("#c-addb").onclick=()=>{const v=$("#c-add").value.trim();if(!v)return;if(!Object.values(G).flat().includes(v))G["ჩემი"].push(v);sel.add(v);$("#c-add").value="";drawCats()};
+function drawEx(){$("#c-ex").innerHTML="";AB.forEach(l=>{const b=document.createElement("button");b.className="L"+(ex.has(l)?" ex":"");b.textContent=l;b.style.cursor="pointer";b.onclick=()=>{ex.has(l)?ex.delete(l):ex.add(l);if(AB.length-ex.size<5)ex.delete(l);drawEx()};$("#c-ex").appendChild(b)})}
+drawCats();drawEx();
+let rn=0,total=0,letter="",cats=[],iv,tv,idx=0;
+$("#c-go").onclick=()=>{if(sel.size<2){$("#c-msg").textContent="ერთ კატეგორიაზე თამაში შეუძლებელია. აირჩიეთ მინიმუმ 2.";return}
+cats=[...sel];rn=0;total=0;$("#c-setup").style.display="none";$("#c-play").style.display="block";newRound()};
+function newRound(){rn++;$("#c-rn").textContent=rn;$("#c-tot").textContent=total;$("#c-round").style.display="none";$("#c-rev").style.display="none";$("#c-wheel").style.display="flex";
+const live=AB.filter(l=>!ex.has(l));$("#c-wheel").innerHTML=live.map(l=>`<div class="L">${l}</div>`).join("");$("#c-run").disabled=false;$("#c-stop").disabled=true;$("#c-run").style.display=""}
+$("#c-run").onclick=()=>{const cells=$$("#c-wheel .L");$("#c-run").disabled=true;$("#c-stop").disabled=false;idx=0;clearInterval(iv);iv=setInterval(()=>{cells.forEach(c=>c.classList.remove("act"));cells[idx%cells.length].classList.add("act");idx++;beep(300+(idx%8)*40,.03)},110)};
+$("#c-stop").onclick=()=>{clearInterval(iv);const a=$("#c-wheel .act");letter=a?a.textContent:AB[0];$("#c-stop").disabled=true;beep(880,.25);confetti();startAnswers()};
+function startAnswers(){$("#c-run").style.display="none";$("#c-round").style.display="block";$("#c-let").textContent=letter;
+$("#c-table").innerHTML="<table><tr><th>კატეგორია</th><th>პასუხი</th></tr>"+cats.map((c,i)=>`<tr><td>${c}</td><td><input data-i="${i}" autocomplete="off" placeholder="${letter}..."></td></tr>`).join("")+"</table>";
+let t=+$("#c-time").value;const tick=()=>{$("#c-timer").textContent="⏱ "+t;$("#c-timer").classList.toggle("low",t<=10);if(t<=10&&t>0)beep(900,.1)};tick();clearInterval(tv);
+tv=setInterval(()=>{t--;tick();if(t<=0){clearInterval(tv);finish()}},1000)}
+$("#c-end").onclick=()=>{clearInterval(tv);finish()};
+function finish(){clearInterval(tv);const ans=$$("#c-table input").map(i=>(i.disabled=true,i.value.trim()));$("#c-round").style.display="none";
+const st=ans.map(a=>a&&a[0]===letter);const r=$("#c-rev");r.style.display="block";
+const draw=()=>{const pts=st.filter(Boolean).length*10;r.innerHTML=`<h3>შეფასება: ასო „${letter}“</h3><p class="note">ავტომატური შემოწმება მხოლოდ დამხმარეა (ცარიელი ან სხვა ასოთი დაწყებული პასუხი წითლად იწყება). საბოლოოდ თავად გადაწყვიტე.</p><table>`+cats.map((c,i)=>`<tr><td>${c}</td><td>${ans[i]||"—"}</td><td><button class="btn g" data-v="1" data-i="${i}" style="padding:4px 10px;opacity:${st[i]?1:.35}">✅</button><button class="btn r" data-v="0" data-i="${i}" style="padding:4px 10px;opacity:${st[i]?.35:1}">❌</button></td></tr>`).join("")+`</table><p>რაუნდის ქულა: <b>${pts}</b></p><button class="btn b" id="c-ok">დადასტურება და შემდეგი რაუნდი</button>`;
+$$("#c-rev [data-v]").forEach(b=>b.onclick=()=>{st[+b.dataset.i]=b.dataset.v==="1";draw()});$("#c-ok").onclick=()=>{total+=pts;newRound()}};draw()}
+
+/* ჩამოხრჩობანა */
+let word="",max=9,used=new Set(),wrong=0;
+$("#h-start").onclick=()=>{const w=$("#h-word").value.trim();if(!/^[ა-ჰ]{2,}$/.test(w)){$("#h-msg").textContent="მხოლოდ ქართული ასოები, მინიმუმ 2, ციფრებისა და ინტერვალის გარეშე.";return}
+word=w;max=+$("#h-max").value;used=new Set();wrong=0;$("#h-word").value="";$("#h-msg").textContent="";$("#h-set").style.display="none";$("#h-play").style.display="block";$("#h-mx").textContent=max;$("#h-len").textContent=w.length;$("#h-res").textContent="";
+$("#h-kb").innerHTML="";AB.forEach(l=>{const b=document.createElement("button");b.textContent=l;b.onclick=()=>guess(l,b);$("#h-kb").appendChild(b)});drawH()};
+function drawH(){const parts=$$("svg .part");const n=Math.round(wrong/max*9);parts.forEach((p,i)=>p.classList.toggle("show",i<n));$("#h-wr").textContent=wrong;
+$("#h-slots").innerHTML=[...word].map(c=>`<span>${used.has(c)?c:""}</span>`).join("")}
+function guess(l,b){if(used.has(l))return;used.add(l);b.disabled=true;const hit=word.includes(l);b.className=hit?"hit":"miss";if(!hit)wrong++;beep(hit?700:200,.12);drawH();
+const won=[...word].every(c=>used.has(c));
+if(won||wrong>=max){$$("#h-kb button").forEach(x=>x.disabled=true);$("#h-res").textContent=won?`🎉 გამოიცანი! სიტყვა: ${word} (შეცდომა: ${wrong})`:`😅 მცდელობა ამოიწურა. სიტყვა იყო: ${word}`;if(won){confetti();beep(1000,.4)}else{$$("svg .part").forEach(p=>p.classList.add("show"))}}}
+$("#h-again").onclick=()=>{$("#h-play").style.display="none";$("#h-set").style.display="block";word=""};
+</script>
+</body>
+</html>
