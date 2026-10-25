@@ -298,8 +298,8 @@ const panel = document.createElement('div');  panel.id = 'onlineRooms';
     }, { onConflict: 'room_id,player_id' });
 
     if (error) {
-      status('ვერ შემოხვედი ოთახში. შეამოწმე Supabase-ის წესები.');
-      console.error(error);
+      status('შესვლის შეცდომა: ' + error.message);
+      console.error('ოთახში შესვლის შეცდომა:', error);
       return;
     }
 
