@@ -264,8 +264,11 @@ const panel = document.createElement('section');  panel.id = 'onlineRooms';
     <div class="roomStatus" id="orStatus">შექმენი ოთახი ან შეიყვანე მეგობრის კოდი.</div>
     <div id="orPlayers"></div>
   `;
-  const gameMain = document.querySelector('main');
-  if (gameMain) gameMain.appendChild(panel); else document.body.appendChild(panel);
+  const home = document.getElementById('v-home');
+  const hero = home && home.querySelector('.hero');
+  if (hero) hero.insertAdjacentElement('afterend', panel);
+  else if (home) home.prepend(panel);
+  else document.body.appendChild(panel);
 
   let room = null;
   let channel = null;
