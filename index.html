@@ -324,6 +324,9 @@ const panel = document.createElement('section');  panel.id = 'onlineRooms';
     status('ოთახის კოდი: ' + room.room_code + ' — გაუზიარე მეგობარს!');
     if (channel) await db.removeChannel(channel);
 
+    let channelReady = false;
+    let resolveChannelReady;
+    const channelReadyPromise = new Promise(resolve => { resolveChannelReady = resolve; });
     channel = db.channel('room-' + room.id, { config: { broadcast: { self: true } } })
       .on('postgres_changes', {
         event: '*', schema: 'public', table: 'room_players',
@@ -333,10 +336,34 @@ const panel = document.createElement('section');  panel.id = 'onlineRooms';
         if (!payload || payload.playerId === playerId) return;
         window.dispatchEvent(new CustomEvent('90s-online-game', { detail: payload }));
       })
-      .subscribe();
+      .subscribe((state) => {
+        if (state === 'SUBSCRIBED') {
+          channelReady = true;
+          resolveChannelReady(true);
+          status('ონლაინ ოთახში ხარ! კოდი: ' + room.room_code + '. გაუზიარე მეგობარს და ორივემ გახსენით თამაში „ქალაქობანა“ ან „ჩამოხრჩობანა“.');
+        } else if (state === 'CHANNEL_ERROR' || state === 'TIMED_OUT' || state === 'CLOSED') {
+          channelReady = false;
+          resolveChannelReady(false);
+          status('ონლაინ კავშირი ვერ დამყარდა (' + state + '). შეამოწმე Supabase Realtime-ის ჩართვა და სცადე თავიდან.');
+        }
+      });
 
     window.sendOnlineGame = async (gameEvent, data = {}) => {
-      if (!channel || !room) return false;
+      if (!channel || !room) {
+        status('ჯერ ონლაინ ოთახში შედი.');
+        return false;
+      }
+      if (!channelReady) {
+        status('ონლაინ კავშირს ველოდები...');
+        const ready = await Promise.race([
+          channelReadyPromise,
+          new Promise(resolve => setTimeout(() => resolve(false), 8000))
+        ]);
+        if (!ready) {
+          status('ონლაინ კავშირი მზად არ არის. განაახლე გვერდი და ხელახლა შედი ოთახში.');
+          return false;
+        }
+      }
       const result = await channel.send({ type: 'broadcast', event: 'game-sync',
         payload: { gameEvent, data, playerId, playerName: cleanName(), sentAt: Date.now() } });
       if (result !== 'ok') status('ონლაინ სინქრონიზაცია ვერ მოხერხდა: ' + result);
