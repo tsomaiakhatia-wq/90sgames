@@ -209,9 +209,13 @@ window.addEventListener('90s-online-game', event => {
     $("#c-table").innerHTML="<table><tr><th>კატეგორია</th><th>პასუხი</th></tr>"+cats.map((c,i)=>`<tr><td>${c}</td><td><input data-i="${i}" autocomplete="off" placeholder="${letter}..."></td></tr>`).join("")+"</table>";
     $("#c-table").querySelectorAll("input").forEach(input=>input.addEventListener("input",()=>{if(window.sendOnlineGame)window.sendOnlineGame("city-answer",{index:+input.dataset.i,value:input.value,letter})}));
     let t=Math.max(10,Math.min(300,+data.time||90));const tick=()=>{$("#c-timer").textContent="⏱ "+t;$("#c-timer").classList.toggle("low",t<=10)};
-    tick();tv=setInterval(()=>{t--;tick();if(t<=0){clearInterval(tv);finish()}},1000);
+    tick();tv=setInterval(()=>{t--;tick();if(t<=0){clearInterval(tv);if(window.sendOnlineGame)window.sendOnlineGame("city-finish",{round:rn});finish()}},1000);
   }else if(payload.gameEvent==='city-answer'){
+    if(data.round && data.round!==rn) return;
     const input=$("#c-table input[data-i='"+data.index+"']");if(input&&document.activeElement!==input)input.value=data.value||'';
+  }else if(payload.gameEvent==='city-finish'){
+    if(data.round && data.round!==rn) return;
+    if($("#c-round").style.display!=="none"){clearInterval(tv);finish()}
   }
 });
 /* ჩამოხრჩობანა */
