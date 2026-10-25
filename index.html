@@ -218,5 +218,151 @@ const supabaseClient = window.supabase.createClient(
 );
 console.log('Supabase დაკავშირებულია!');
 </script>
+<script>
+(function () {
+  const db = window.supabase.createClient(
+    'https://cngjeiiisggwmhchmxmc.supabase.co',
+    'sb_publishable_ppjLBlECKgtrmUY1n02isg_zapRuAnX'
+  );
+
+  const style = document.createElement('style');
+  style.textContent = `
+    #onlineRooms {
+      position:fixed;right:16px;bottom:16px;z-index:99999;
+      background:#17132d;color:white;padding:18px;width:290px;
+      border:2px solid #a78bfa;border-radius:16px;
+      font:15px Arial,sans-serif;box-shadow:0 5px 30px #0008
+    }
+    #onlineRooms input,#onlineRooms button {
+      box-sizing:border-box;width:100%;padding:10px;margin-top:8px;
+      border-radius:8px;border:1px solid #a78bfa
+    }
+    #onlineRooms button {cursor:pointer;background:#a78bfa;color:#17132d;font-weight:bold}
+    #onlineRooms .roomStatus {margin-top:10px;overflow-wrap:anywhere}
+  `;
+  document.head.appendChild(style);
+
+  const panel = document.createElement('section');
+  panel.id = 'onlineRooms';
+  panel.innerHTML = `
+    <strong>🎮 ონლაინ ოთახები</strong>
+    <input id="orName" maxlength="24" placeholder="შენი სახელი">
+    <button id="orCreate">➕ ოთახის შექმნა</button>
+    <input id="orCode" maxlength="6" placeholder="ოთახის 6-ნიშნა კოდი">
+    <button id="orJoin">🚪 კოდით შემოსვლა</button>
+    <div class="roomStatus" id="orStatus">შექმენი ოთახი ან შეიყვანე მეგობრის კოდი.</div>
+    <div id="orPlayers"></div>
+  `;
+  document.body.appendChild(panel);
+
+  let room = null;
+  let channel = null;
+  let playerId = sessionStorage.getItem('orPlayerId');
+
+  if (!playerId) {
+    playerId = crypto.randomUUID();
+    sessionStorage.setItem('orPlayerId', playerId);
+  }
+
+  const $ = id => document.getElementById(id);
+  const status = message => $('orStatus').textContent = message;
+  const cleanName = () => $('orName').value.trim().slice(0, 24);
+
+  async function refreshPlayers() {
+    if (!room) return;
+    const { data, error } = await db
+      .from('room_players')
+      .select('player_name')
+      .eq('room_id', room.id)
+      .order('joined_at');
+
+    if (error) {
+      status('მოთამაშეების ჩატვირთვა ვერ მოხერხდა.');
+      return;
+    }
+
+    $('orPlayers').textContent = 'მოთამაშეები: ' +
+      (data.length ? data.map(p => p.player_name).join(', ') : 'ჯერ არავინ');
+  }
+
+  async function enterRoom(foundRoom) {
+    const name = cleanName();
+    if (!name) {
+      status('ჯერ ჩაწერე შენი სახელი.');
+      return;
+    }
+
+    const { error } = await db.from('room_players').upsert({
+      room_id: foundRoom.id,
+      player_id: playerId,
+      player_name: name
+    }, { onConflict: 'room_id,player_id' });
+
+    if (error) {
+      status('ვერ შემოხვედი ოთახში. შეამოწმე Supabase-ის წესები.');
+      console.error(error);
+      return;
+    }
+
+    room = foundRoom;
+    $('orCode').value = room.room_code;
+    status('ოთახის კოდი: ' + room.room_code + ' — გაუზიარე მეგობარს!');
+    if (channel) await db.removeChannel(channel);
+
+    channel = db.channel('room-' + room.id)
+      .on('postgres_changes', {
+        event: '*', schema: 'public', table: 'room_players',
+        filter: 'room_id=eq.' + room.id
+      }, refreshPlayers)
+      .subscribe();
+
+    await refreshPlayers();
+  }
+
+  $('orCreate').onclick = async () => {
+    const name = cleanName();
+    if (!name) return status('ჯერ ჩაწერე შენი სახელი.');
+
+    status('ოთახი იქმნება...');
+    const code = () => Math.random().toString(36).slice(2, 8).toUpperCase();
+
+    let created = null;
+    for (let i = 0; i < 5 && !created; i++) {
+      const { data, error } = await db.from('game_rooms')
+        .insert({ room_code: code(), status: 'waiting' })
+        .select().single();
+
+      if (!error) created = data;
+      else if (error.code !== '23505') {
+        console.error(error);
+        return status('ოთახი ვერ შეიქმნა. შეამოწმე Supabase-ის წესები.');
+      }
+    }
+
+    if (!created) return status('კოდის შექმნა ვერ მოხერხდა. სცადე თავიდან.');
+    await enterRoom(created);
+  };
+
+  $('orJoin').onclick = async () => {
+    const code = $('orCode').value.trim().toUpperCase();
+    if (!cleanName()) return status('ჯერ ჩაწერე შენი სახელი.');
+    if (!/^[A-Z0-9]{6}$/.test(code)) return status('შეიყვანე 6-ნიშნა კოდი.');
+
+    status('ოთახს ვეძებ...');
+    const { data, error } = await db.from('game_rooms')
+      .select('*').eq('room_code', code)
+      .eq('status', 'waiting').maybeSingle();
+
+    if (error) {
+      console.error(error);
+      return status('ოთახის მოძებნა ვერ მოხერხდა.');
+    }
+    if (!data) return status('ასეთი აქტიური ოთახი ვერ მოიძებნა.');
+
+    await enterRoom(data);
+  };
+})();
+</script>
+
 </body>
 </html>
