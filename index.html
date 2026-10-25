@@ -186,7 +186,7 @@ cats=[...sel];rn=0;total=0;$("#c-setup").style.display="none";$("#c-play").style
 function newRound(){rn++;$("#c-rn").textContent=rn;$("#c-tot").textContent=total;$("#c-round").style.display="none";$("#c-rev").style.display="none";$("#c-wheel").style.display="flex";
 const live=AB.filter(l=>!ex.has(l));$("#c-wheel").innerHTML=live.map(l=>`<div class="L">${l}</div>`).join("");$("#c-run").disabled=false;$("#c-stop").disabled=true;$("#c-run").style.display=""}
 $("#c-run").onclick=()=>{const cells=$$("#c-wheel .L");$("#c-run").disabled=true;$("#c-stop").disabled=false;idx=0;clearInterval(iv);iv=setInterval(()=>{cells.forEach(c=>c.classList.remove("act"));cells[idx%cells.length].classList.add("act");idx++;beep(300+(idx%8)*40,.03)},110)};
-$("#c-stop").onclick=()=>{clearInterval(iv);const a=$("#c-wheel .act");letter=a?a.textContent:AB[0];$("#c-stop").disabled=true;beep(880,.25);confetti();startAnswers()};
+$("#c-stop").onclick=()=>{clearInterval(iv);const a=$("#c-wheel .act");letter=a?a.textContent:AB[0];$("#c-stop").disabled=true;beep(880,.25);confetti();startAnswers();if(window.sendOnlineGame)window.sendOnlineGame('city-round',{letter,categories:cats,time:+$("#c-time").value,round:rn})};
 function startAnswers(){$("#c-run").style.display="none";$("#c-round").style.display="block";$("#c-let").textContent=letter;
 $("#c-table").innerHTML="<table><tr><th>კატეგორია</th><th>პასუხი</th></tr>"+cats.map((c,i)=>`<tr><td>${c}</td><td><input data-i="${i}" autocomplete="off" placeholder="${letter}..."></td></tr>`).join("")+"</table>";
 let t=+$("#c-time").value;const tick=()=>{$("#c-timer").textContent="⏱ "+t;$("#c-timer").classList.toggle("low",t<=10);if(t<=10&&t>0)beep(900,.1)};tick();clearInterval(tv);
@@ -197,6 +197,22 @@ const st=ans.map(a=>a&&a[0]===letter);const r=$("#c-rev");r.style.display="block
 const draw=()=>{const pts=st.filter(Boolean).length*10;r.innerHTML=`<h3>შეფასება: ასო „${letter}“</h3><p class="note">ავტომატური შემოწმება მხოლოდ დამხმარეა (ცარიელი ან სხვა ასოთი დაწყებული პასუხი წითლად იწყება). საბოლოოდ თავად გადაწყვიტე.</p><table>`+cats.map((c,i)=>`<tr><td>${c}</td><td>${ans[i]||"—"}</td><td><button class="btn g" data-v="1" data-i="${i}" style="padding:4px 10px;opacity:${st[i]?1:.35}">✅</button><button class="btn r" data-v="0" data-i="${i}" style="padding:4px 10px;opacity:${st[i]?.35:1}">❌</button></td></tr>`).join("")+`</table><p>რაუნდის ქულა: <b>${pts}</b></p><button class="btn b" id="c-ok">დადასტურება და შემდეგი რაუნდი</button>`;
 $$("#c-rev [data-v]").forEach(b=>b.onclick=()=>{st[+b.dataset.i]=b.dataset.v==="1";draw()});$("#c-ok").onclick=()=>{total+=pts;newRound()}};draw()}
 
+/* ონლაინ ქალაქობანას სინქრონიზაცია */
+window.addEventListener('90s-online-game', event => {
+  const payload=event.detail||{}, data=payload.data||{};
+  if(payload.gameEvent==='city-round'&&data.letter&&Array.isArray(data.categories)){
+    clearInterval(iv);clearInterval(tv);cats=data.categories;rn=data.round||rn+1;letter=data.letter;location.hash='#city';
+    $("#c-setup").style.display="none";$("#c-play").style.display="block";$("#c-rn").textContent=rn;
+    $("#c-round").style.display="block";$("#c-wheel").style.display="none";$("#c-run").style.display="none";
+    $("#c-stop").disabled=true;$("#c-let").textContent=letter;
+    $("#c-table").innerHTML="<table><tr><th>კატეგორია</th><th>პასუხი</th></tr>"+cats.map((c,i)=>`<tr><td>${c}</td><td><input data-i="${i}" autocomplete="off" placeholder="${letter}..."></td></tr>`).join("")+"</table>";
+    $("#c-table").querySelectorAll("input").forEach(input=>input.addEventListener("input",()=>{if(window.sendOnlineGame)window.sendOnlineGame("city-answer",{index:+input.dataset.i,value:input.value,letter})}));
+    let t=Math.max(10,Math.min(300,+data.time||90));const tick=()=>{$("#c-timer").textContent="⏱ "+t;$("#c-timer").classList.toggle("low",t<=10)};
+    tick();tv=setInterval(()=>{t--;tick();if(t<=0){clearInterval(tv);finish()}},1000);
+  }else if(payload.gameEvent==='city-answer'){
+    const input=$("#c-table input[data-i='"+data.index+"']");if(input&&document.activeElement!==input)input.value=data.value||'';
+  }
+});
 /* ჩამოხრჩობანა */
 let word="",max=9,used=new Set(),wrong=0;
 $("#h-start").onclick=()=>{const w=$("#h-word").value.trim();if(!/^[ა-ჰ]{2,}$/.test(w)){$("#h-msg").textContent="მხოლოდ ქართული ასოები, მინიმუმ 2, ციფრებისა და ინტერვალის გარეშე.";return}
@@ -305,12 +321,24 @@ const panel = document.createElement('section');  panel.id = 'onlineRooms';
     status('ოთახის კოდი: ' + room.room_code + ' — გაუზიარე მეგობარს!');
     if (channel) await db.removeChannel(channel);
 
-    channel = db.channel('room-' + room.id)
+    channel = db.channel('room-' + room.id, { config: { broadcast: { self: true } } })
       .on('postgres_changes', {
         event: '*', schema: 'public', table: 'room_players',
         filter: 'room_id=eq.' + room.id
       }, refreshPlayers)
+      .on('broadcast', { event: 'game-sync' }, ({ payload }) => {
+        if (!payload || payload.playerId === playerId) return;
+        window.dispatchEvent(new CustomEvent('90s-online-game', { detail: payload }));
+      })
       .subscribe();
+
+    window.sendOnlineGame = async (gameEvent, data = {}) => {
+      if (!channel || !room) return false;
+      const result = await channel.send({ type: 'broadcast', event: 'game-sync',
+        payload: { gameEvent, data, playerId, playerName: cleanName(), sentAt: Date.now() } });
+      if (result !== 'ok') status('ონლაინ სინქრონიზაცია ვერ მოხერხდა: ' + result);
+      return result === 'ok';
+    };
 
     await refreshPlayers();
   }
