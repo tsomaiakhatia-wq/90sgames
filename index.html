@@ -185,32 +185,34 @@ let cityHostId=null, wheelStarterId=null, cityFinished=false, cityAnswers={}, lo
 const onlineId=()=>sessionStorage.getItem('orPlayerId')||'local';
 const onlineHost=()=>!!window.is90sRoomHost;
 const playerLabel=()=>window.current90sPlayerName||'მოთამაშე';
-function stopCityRound(){if(cityFinished)return;cityFinished=true;clearInterval(tv);$("#c-table input").forEach(i=>i.disabled=true);if(window.sendOnlineGame)window.sendOnlineGame('city-finish',{round:rn,answers:cityAnswers,finishedBy:onlineId()});showCityResults()}
+function stopCityRound(){if(cityFinished)return;cityFinished=true;clearInterval(tv);const answers=$("#c-table input").map(i=>(i.disabled=true,i.value.trim()));cityAnswers[onlineId()]={answers,name:playerLabel()};if(window.sendOnlineGame)window.sendOnlineGame('city-finish',{round:rn,answers,finishedBy:onlineId(),playerName:playerLabel()});showCityResults()}
 function showCityResults(){const r=$("#c-rev");r.style.display="block";$("#c-round").style.display="none";const all=Object.entries(cityAnswers);const me=onlineId();const names={};names[me]=playerLabel();const draw=()=>{r.innerHTML=`<h3>შედეგები — ასო „${letter}“</h3><p class="note">შეამოწმეთ ორივე მოთამაშის პასუხები და მონიშნეთ სწორი პასუხები.</p>`+cats.map((cat,i)=>{const rows=all.map(([pid,obj])=>`<div><b>${names[pid]|| (pid===me?'შენ':'მეგობარი')}:</b> ${(obj.answers||[])[i]||'—'}</div>`).join('');return `<div class="card"><b>${cat}</b>${rows||'<div>პასუხი არ არის</div>'}</div>`}).join('')+`<button class="btn b" id="c-ok">შემდეგი რაუნდი</button>`;$("#c-ok").onclick=()=>{if(onlineHost()){if(window.sendOnlineGame)window.sendOnlineGame('city-next',{round:rn+1});newRound()}else if(window.sendOnlineGame)window.sendOnlineGame('city-next-request',{round:rn+1})};};draw()}
 
 $("#c-go").onclick=()=>{if(sel.size<2){$("#c-msg").textContent="ერთ კატეგორიაზე თამაში შეუძლებელია. აირჩიეთ მინიმუმ 2.";return}
 cats=[...sel];rn=0;total=0;$("#c-setup").style.display="none";$("#c-play").style.display="block";newRound()};
 function newRound(){rn++;$("#c-rn").textContent=rn;$("#c-tot").textContent=total;$("#c-round").style.display="none";$("#c-rev").style.display="none";$("#c-wheel").style.display="flex";
 const live=AB.filter(l=>!ex.has(l));$("#c-wheel").innerHTML=live.map(l=>`<div class="L">${l}</div>`).join("");$("#c-run").disabled=false;$("#c-stop").disabled=true;$("#c-run").style.display=""}
-$("#c-run").onclick=()=>{if(window.current90sRoomId&&!onlineHost()){return alert("ასოებს ატრიალებს ოთახის შემქმნელი.");}const cells=$$("#c-wheel .L");$("#c-run").disabled=true;$("#c-stop").disabled=false;idx=0;clearInterval(iv);iv=setInterval(()=>{cells.forEach(c=>c.classList.remove("act"));cells[idx%cells.length].classList.add("act");idx++;beep(300+(idx%8)*40,.03)},110)};
-$("#c-stop").onclick=()=>{if(window.current90sRoomId&&onlineHost()){return alert("შენ ატრიალებ ასოებს — სტოპს მეგობარი აჭერს.");}clearInterval(iv);const a=$("#c-wheel .act");letter=a?a.textContent:AB[0];$("#c-stop").disabled=true;beep(880,.25);confetti();cityFinished=false;cityAnswers={};startAnswers();if(window.sendOnlineGame)window.sendOnlineGame('city-round',{letter,categories:cats,time:+$("#c-time").value,round:rn,starter:onlineId(),host:onlineHost()})};
+function spinWheel(){const cells=$("#c-wheel .L");if(!cells.length)return;$("#c-run").disabled=true;$("#c-stop").disabled=!!onlineHost();idx=0;clearInterval(iv);iv=setInterval(()=>{cells.forEach(c=>c.classList.remove("act"));cells[idx%cells.length].classList.add("act");idx++;beep(300+(idx%8)*40,.03)},110)}
+$("#c-run").onclick=()=>{if(window.current90sRoomId&&!onlineHost())return alert("ასოებს ატრიალებს ოთახის შემქმნელი.");spinWheel();if(window.sendOnlineGame)window.sendOnlineGame('city-wheel-start',{round:rn,categories:cats,time:+$("#c-time").value})};
+$("#c-stop").onclick=()=>{if(window.current90sRoomId&&onlineHost())return alert("შენ ატრიალებ ასოებს — სტოპს მეგობარი აჭერს.");clearInterval(iv);const a=$("#c-wheel .act");letter=a?a.textContent:AB[0];$("#c-stop").disabled=true;beep(880,.25);confetti();cityFinished=false;cityAnswers={};startAnswers();if(window.sendOnlineGame)window.sendOnlineGame('city-round',{letter,categories:cats,time:+$("#c-time").value,round:rn,starter:onlineId(),hostId:window.roomHostPlayerId||'',seconds:+$("#c-time").value})};
 function startAnswers(){cityFinished=false;cityAnswers={};$("#c-run").style.display="none";$("#c-wheel").style.display="none";$("#c-round").style.display="block";$("#c-let").textContent=letter;
 $("#c-table").innerHTML="<table><tr><th>კატეგორია</th><th>პასუხი</th></tr>"+cats.map((c,i)=>`<tr><td>${c}</td><td><input data-i="${i}" autocomplete="off" placeholder="${letter}..."></td></tr>`).join("")+"</table>";
-$("#c-table").querySelectorAll("input").forEach(input=>input.addEventListener("input",()=>{if(window.sendOnlineGame)window.sendOnlineGame("city-answer",{index:+input.dataset.i,value:input.value,letter,round:rn,answers:$$("#c-table input").map(x=>x.value),playerId:onlineId(),playerName:playerLabel()})}));
+$("#c-table").querySelectorAll("input").forEach(input=>input.addEventListener("input",()=>{const answers=$("#c-table input").map(x=>x.value);cityAnswers[onlineId()]={answers,name:playerLabel()};if(window.sendOnlineGame)window.sendOnlineGame("city-answer",{index:+input.dataset.i,value:input.value,letter,round:rn,answers,playerId:onlineId(),playerName:playerLabel()})}));
 let t=+$("#c-time").value;const tick=()=>{$("#c-timer").textContent="⏱ "+t;$("#c-timer").classList.toggle("low",t<=10)};tick();clearInterval(tv);
 tv=setInterval(()=>{t--;tick();if(t<=0){clearInterval(tv);stopCityRound()}},1000)}
 $("#c-end").onclick=()=>{if(cityFinished)return;stopCityRound()};
 function finish(){stopCityRound()}
 window.addEventListener('90s-online-game', event => {
  const p=event.detail||{},d=p.data||{};
- if(p.gameEvent==='city-round'&&d.letter&&Array.isArray(d.categories)){
+ if(p.gameEvent==='city-wheel-start'&&d.round===rn){if(!onlineHost()){location.hash='#city';$("#c-setup").style.display="none";$("#c-play").style.display="block";$("#c-wheel").style.display="flex";spinWheel();$("#c-stop").disabled=false;}}
+ else if(p.gameEvent==='city-round'&&d.letter&&Array.isArray(d.categories)){
   clearInterval(iv);clearInterval(tv);cats=d.categories;rn=d.round||rn+1;letter=d.letter;$("#c-setup").style.display="none";$("#c-play").style.display="block";$("#c-rn").textContent=rn;
   $("#c-wheel").style.display="none";$("#c-run").style.display="none";$("#c-stop").disabled=true;startAnswers();const t=Math.max(10,Math.min(300,+d.time||90));let left=t;$("#c-timer").textContent="⏱ "+left;clearInterval(tv);tv=setInterval(()=>{left--;$("#c-timer").textContent="⏱ "+left;if(left<=0)stopCityRound()},1000);
  }else if(p.gameEvent==='city-answer'){
   if(d.round!==rn)return;cityAnswers[d.playerId||p.playerId]={answers:d.answers||[],name:d.playerName||p.playerName};
  }else if(p.gameEvent==='city-finish'){
   if(d.round!==rn)return;clearInterval(tv);cityFinished=true;
-  if(d.answers)cityAnswers[d.finishedBy||p.playerId]={answers:d.answers,name:p.playerName};
+  if(Array.isArray(d.answers))cityAnswers[d.finishedBy||p.playerId]={answers:d.answers,name:d.playerName||p.playerName};
   showCityResults();
  }else if(p.gameEvent==='city-next'&&d.round===rn+1){newRound()}
 });
@@ -332,6 +334,7 @@ const panel = document.createElement('div');  panel.id = 'onlineRooms';
     window.current90sRoomId = room.id;
     window.current90sPlayerName = name;
     window.is90sRoomHost = isRoomHost;
+    window.roomHostPlayerId = isRoomHost ? playerId : null;
     $('orCode').value = room.room_code;
     status((isRoomHost ? 'შენ შექმენი ოთახი. ' : 'ოთახში შემოხვედი. ') + 'თამაში: ' + (roomGame==='city'?'ქალაქობანა':'ჩამოხრჩობანა') + '. კოდი: ' + room.room_code + ' — გაუზიარე მეგობარს.');
     if (channel) await db.removeChannel(channel);
