@@ -282,6 +282,9 @@ const panel = document.createElement('div');  panel.id = 'onlineRooms';
 
   let room = null;
   let channel = null;
+  let isRoomHost = false;
+  let roomGame = 'city';
+  let roomConfig = null;
   let playerId = sessionStorage.getItem('orPlayerId');
 
   if (!playerId) {
@@ -331,7 +334,7 @@ const panel = document.createElement('div');  panel.id = 'onlineRooms';
 
     room = foundRoom;
     $('orCode').value = room.room_code;
-    status('ოთახი შეიქმნა! თამაში: ' + ($('orGame').value==='city'?'ქალაქობანა':'ჩამოხრჩობანა') + '. კოდი: ' + room.room_code + ' — გაუზიარე მეგობარს. შემდეგ მოამზადე თამაშის წესები.');
+    status((isRoomHost ? 'შენ შექმენი ოთახი. ' : 'ოთახში შემოხვედი. ') + 'თამაში: ' + (roomGame==='city'?'ქალაქობანა':'ჩამოხრჩობანა') + '. კოდი: ' + room.room_code + ' — გაუზიარე მეგობარს.');
     if (channel) await db.removeChannel(channel);
 
     let channelReady = false;
@@ -342,8 +345,20 @@ const panel = document.createElement('div');  panel.id = 'onlineRooms';
         event: '*', schema: 'public', table: 'room_players',
         filter: 'room_id=eq.' + room.id
       }, refreshPlayers)
-      .on('broadcast', { event: 'game-sync' }, ({ payload }) => {
+      .on('broadcast', { event: 'game-sync' }, async ({ payload }) => {
         if (!payload || payload.playerId === playerId) return;
+        if (payload.gameEvent === 'room-config-request' && isRoomHost) {
+          await window.sendOnlineGame('room-config', { game: roomGame, config: roomConfig, hostName: cleanName() });
+          return;
+        }
+        if (payload.gameEvent === 'room-config' && payload.data) {
+          roomGame = payload.data.game === 'hang' ? 'hang' : 'city';
+          roomConfig = payload.data.config || null;
+          $('orGame').value = roomGame;
+          status('მეგობრის ოთახი: ' + (roomGame === 'city' ? 'ქალაქობანა' : 'ჩამოხრჩობანა') + '. გახსენით შესაბამისი თამაში ქვემოთ.');
+          if (roomGame === 'city') location.hash = '#city';
+          else location.hash = '#hang';
+        }
         window.dispatchEvent(new CustomEvent('90s-online-game', { detail: payload }));
       })
       .subscribe((state) => {
@@ -381,6 +396,12 @@ const panel = document.createElement('div');  panel.id = 'onlineRooms';
     };
 
     await refreshPlayers();
+    if (!isRoomHost) {
+      // Ask the room creator to resend the configuration; realtime broadcasts aren't stored for late joiners.
+      window.sendOnlineGame('room-config-request', {});
+    } else {
+      window.sendOnlineGame('room-config', { game: roomGame, config: roomConfig, hostName: cleanName() });
+    }
   }
 
   $('orCreate').onclick = async () => {
@@ -388,6 +409,9 @@ const panel = document.createElement('div');  panel.id = 'onlineRooms';
     if (!name) return status('ჯერ ჩაწერე შენი სახელი.');
 
     status('ოთახი იქმნება...');
+    isRoomHost = true;
+    roomGame = $('orGame').value === 'hang' ? 'hang' : 'city';
+    roomConfig = null;
     const code = () => Math.random().toString(36).slice(2, 8).toUpperCase();
 
     let created = null;
@@ -413,6 +437,9 @@ const panel = document.createElement('div');  panel.id = 'onlineRooms';
     if (!/^[A-Z0-9]{6}$/.test(code)) return status('შეიყვანე 6-ნიშნა კოდი.');
 
     status('ოთახს ვეძებ...');
+    isRoomHost = false;
+    roomGame = 'city';
+    roomConfig = null;
     const { data, error } = await db.from('game_rooms')
       .select('*').eq('room_code', code)
       .eq('status', 'waiting').maybeSingle();
