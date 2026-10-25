@@ -208,6 +208,15 @@ function guess(l,b){if(used.has(l))return;used.add(l);b.disabled=true;const hit=
 const won=[...word].every(c=>used.has(c));
 if(won||wrong>=max){$$("#h-kb button").forEach(x=>x.disabled=true);$("#h-res").textContent=won?`🎉 გამოიცანი! სიტყვა: ${word} (შეცდომა: ${wrong})`:`😅 მცდელობა ამოიწურა. სიტყვა იყო: ${word}`;if(won){confetti();beep(1000,.4)}else{$$("svg .part").forEach(p=>p.classList.add("show"))}}}
 $("#h-again").onclick=()=>{$("#h-play").style.display="none";$("#h-set").style.display="block";word=""};
+</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://cngjeiiisggwmhchmxmc.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_ppjLBlECKgtrmUY1n02isg_zapRuAnX';
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+console.log('Supabase დაკავშირებულია!');
 </script>
 </body>
 </html>
