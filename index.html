@@ -6,26 +6,26 @@
 <title>90s GAME CLUB</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@500;800&display=swap" rel="stylesheet">
 <style>
-:root{--p:#7b2ff7;--pk:#ff3d9a;--bl:#19b5fe;--lm:#b6f400;--yl:#ffd400;--or:#ff8a00;--rd:#ff3b3b;--ink:#26104d;--card:#fffdf5;--bg1:#4b1fa8;--bg2:#ff3d9a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--p:#315c50;--pk:#d7a5a0;--bl:#6c8f91;--lm:#dce8dc;--yl:#e8d7a8;--or:#c58b62;--rd:#b85f5f;--ink:#263b36;--card:#fffdf8;--bg1:#e8eee8;--bg2:#f3e7e2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--card:#fff7e0;--bg1:#2a0f66;--bg2:#b01c6d}}
 :root[data-theme="dark"]{--card:#fff7e0;--bg1:#2a0f66;--bg2:#b01c6d}
 *{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;font-family:'Noto Sans Georgian',system-ui,sans-serif;color:var(--ink);background:linear-gradient(160deg,var(--bg1),var(--bg2)) fixed;min-height:100vh}
-nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px;background:rgba(20,5,60,.55);position:sticky;top:env(safe-area-inset-top,0px);z-index:5;backdrop-filter:blur(6px)}
-.logo{font-weight:800;color:var(--yl);font-size:20px;text-shadow:2px 2px 0 var(--pk);margin-right:auto}
+nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px;background:rgba(38,59,54,.94);position:sticky;top:env(safe-area-inset-top,0px);z-index:5;backdrop-filter:blur(6px)}
+.logo{font-weight:800;color:#f3e7c5;font-size:20px;text-shadow:none;margin-right:auto}
 nav a{color:#fff;text-decoration:none;font-weight:800;font-size:14px;padding:6px 10px;border-radius:10px}
-nav a:hover,nav a.on{background:var(--pk)}
+nav a:hover,nav a.on{background:#d7a5a0;color:#263b36}
 main{max-width:1000px;margin:0 auto;padding:18px 14px 50px}
-h1,h2{color:#fff;text-shadow:3px 3px 0 rgba(0,0,0,.35);line-height:1.25}
-.sub{color:#fff;font-weight:500;font-size:18px}
+h1,h2{color:#315c50;text-shadow:none;line-height:1.25}
+.sub{color:#425b53;font-weight:500;font-size:18px}
 .btn{font:800 17px inherit;font-family:inherit;border:0;border-radius:16px;padding:12px 20px;color:#fff;background:var(--p);box-shadow:0 6px 0 #3d0f9e,0 10px 14px rgba(0,0,0,.3);cursor:pointer;transition:transform .08s,box-shadow .08s;margin:4px}
 .btn:hover{filter:brightness(1.1)}.btn:active{transform:translateY(5px);box-shadow:0 1px 0 #3d0f9e}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .btn.g{background:#1fb53a;box-shadow:0 6px 0 #0d6b20}.btn.r{background:var(--rd);box-shadow:0 6px 0 #9b1313}.btn.y{background:var(--or);box-shadow:0 6px 0 #a14d00}.btn.b{background:var(--bl);box-shadow:0 6px 0 #0a77a8}
 .card{background:var(--card);border-radius:22px;padding:18px;box-shadow:0 8px 0 rgba(0,0,0,.25);margin:12px 0;color:var(--ink)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
-.gc{perspective:800px}.gc .card{transition:transform .15s;transform-style:preserve-3d;border:4px solid var(--ink)}
-.gc.c1 .card{background:linear-gradient(145deg,#fff3a8,#ffb3d9)}.gc.c2 .card{background:linear-gradient(145deg,#b8f2ff,#d6c2ff)}
+.gc{perspective:800px}.gc .card{transition:transform .15s;transform-style:preserve-3d;border:1px solid #d6dfd7;box-shadow:0 8px 24px #263b3612}
+.gc.c1 .card{background:linear-gradient(145deg,#fffdf8,#f3e7e2)}.gc.c2 .card{background:linear-gradient(145deg,#fffdf8,#e8eee8)}
 .hero{display:flex;flex-wrap:wrap;align-items:center;gap:20px}.hero>div:first-child{flex:1 1 320px}
 .scene{perspective:600px;width:130px;height:130px;margin:20px}
 .cube{width:100px;height:100px;position:relative;transform-style:preserve-3d;animation:spin 8s linear infinite;margin:15px}
@@ -227,22 +227,18 @@ console.log('Supabase დაკავშირებულია!');
 
   const style = document.createElement('style');
   style.textContent = `
-    #onlineRooms {
-      position:fixed;right:16px;bottom:16px;z-index:99999;
-      background:#17132d;color:white;padding:18px;width:290px;
-      border:2px solid #a78bfa;border-radius:16px;
-      font:15px Arial,sans-serif;box-shadow:0 5px 30px #0008
-    }
-    #onlineRooms input,#onlineRooms button {
-      box-sizing:border-box;width:100%;padding:10px;margin-top:8px;
-      border-radius:8px;border:1px solid #a78bfa
-    }
-    #onlineRooms button {cursor:pointer;background:#a78bfa;color:#17132d;font-weight:bold}
-    #onlineRooms .roomStatus {margin-top:10px;overflow-wrap:anywhere}
+    #onlineRooms{position:static;z-index:1;background:#fffdf8;color:#263b36;padding:22px;width:min(100%,680px);margin:24px auto;border:1px solid #d6dfd7;border-radius:22px;font:15px 'Noto Sans Georgian',system-ui,sans-serif;box-shadow:0 10px 30px #263b3610}
+    #onlineRooms strong{font-size:20px;color:#315c50}
+    #onlineRooms input,#onlineRooms button{box-sizing:border-box;width:100%;padding:12px;margin-top:10px;border-radius:12px;border:1px solid #c8d5cb;font:inherit}
+    #onlineRooms button{cursor:pointer;background:#315c50;color:white;font-weight:800}
+    #onlineRooms button:hover{background:#24483e}
+    #onlineRooms .roomStatus{margin-top:12px;overflow-wrap:anywhere;color:#425b53}
+    #onlineRooms #orPlayers{margin-top:10px;font-weight:700}
+    @media(max-width:600px){#onlineRooms{padding:16px;margin:18px auto}}
   `;
   document.head.appendChild(style);
 
-const panel = document.createElement('div');  panel.id = 'onlineRooms';
+const panel = document.createElement('section');  panel.id = 'onlineRooms';
   panel.innerHTML = `
     <strong>🎮 ონლაინ ოთახები</strong>
     <input id="orName" maxlength="24" placeholder="შენი სახელი">
@@ -252,7 +248,8 @@ const panel = document.createElement('div');  panel.id = 'onlineRooms';
     <div class="roomStatus" id="orStatus">შექმენი ოთახი ან შეიყვანე მეგობრის კოდი.</div>
     <div id="orPlayers"></div>
   `;
-  document.body.appendChild(panel);
+  const gameMain = document.querySelector('main');
+  if (gameMain) gameMain.appendChild(panel); else document.body.appendChild(panel);
 
   let room = null;
   let channel = null;
@@ -291,11 +288,11 @@ const panel = document.createElement('div');  panel.id = 'onlineRooms';
       return;
     }
 
-    const { error } = await db.from('room_players').upsert({
+    const { error } = await db.from('room_players').insert({
       room_id: foundRoom.id,
       player_id: playerId,
       player_name: name
-    }, { onConflict: 'room_id,player_id' });
+    });
 
     if (error) {
       status('შესვლის შეცდომა: ' + error.message);
@@ -334,7 +331,7 @@ const panel = document.createElement('div');  panel.id = 'onlineRooms';
       if (!error) created = data;
       else if (error.code !== '23505') {
         console.error(error);
-        return status('ოთახი ვერ შეიქმნა. შეამოწმე Supabase-ის წესები.');
+        return status('ოთახი ვერ შეიქმნა: ' + error.message);
       }
     }
 
